@@ -1,0 +1,89 @@
+@prefix : <#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+@prefix string: <http://www.w3.org/2000/10/swap/string#> .
+
+
+:i :target_number "48" .
+
+:fib :number [
+  :index "1" ;
+  :value "0" 
+], [
+  :index "2" ;
+  :value "1" 
+] .
+
+
+# N3 ======================================================
+# calculate guess
+{
+  # get fib(n-2) and fib(n-1)
+  :fib :number [
+    :index ?n2 ;
+    :value ?fib2
+  ], [
+    :index ?n1 ;
+    :value ?fib1
+  ] .
+  # ensure successive numbers
+  (?n1 "1") math:sum ?n .
+  (?n2 "2") math:sum ?n .
+  # check for target
+  ?id :target_number ?target .
+  ?n math:notGreaterThan ?target .
+  (?fib2 ?fib1) math:sum ?fib_n .
+} => {
+  :fib :number [
+    :index ?n ;
+    :value ?fib_n
+  ] .
+} .
+
+# set result
+{
+  ?id :target_number ?aim .
+  :fib :number [
+    :index ?idx ;
+    :value ?res
+  ] .
+  ?aim math:equalTo ?idx .
+} => {
+  ?id :result ?res .
+} .
+
+# N3X ===================================
+
+# calculate guess
+{
+  # get fib(n-2) and fib(n-1)
+  :fib :number [
+    :index ?n2 ;
+    :value ?fib2
+  ], [
+    :index ?n1 ;
+    :value ?fib1
+  ] .
+  # ensure successive numbers
+  ?n1 - ?n2 math:equalTo 1 .
+  # check for target
+  ?id :target_number ?target .
+  ?n1 + 1 math:notGreaterThan ?target .
+} => {
+  :fib :number [
+    :index ?n1 + 1 ;
+    :value ?fib1 + fib2
+  ] .
+} .
+
+# set result
+{
+  ?id :target_number ?aim .
+  :fib :number [
+    :index ?idx ;
+    :value ?res
+  ] .
+  ?aim math:equalTo ?idx .
+} => {
+  ?id :result ?res .
+} .

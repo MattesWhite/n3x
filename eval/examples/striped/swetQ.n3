@@ -1,0 +1,9 @@
+{   
+    <swetA11.n3> log:semantics ?A.
+    ?A math:memberCount ?D.
+    <swetA01.n3> log:semantics ?E.
+    ?E math:memberCount ?H.
+    (?D ?H) math:quotient ?I.
+} => {   
+    {{:obs :ascribed :Rain} :given {:obs :ascribed :WetGrass}} e:possibility ?I.
+}.

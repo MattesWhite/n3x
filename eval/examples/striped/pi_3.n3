@@ -1,0 +1,10 @@
+{
+    (?K ?N ?P0 ?P ?S) :pi true
+} <= {
+    ?K math:notEqualTo ?N.
+    (?K 1) math:sum ?K1.
+    (2 ?K) math:product ?K2.
+    (?P0 (?S (?K2 (?K2 1)!math:sum (?K2 2)!math:sum)!math:product)!math:quotient) math:sum ?P1.
+    ?S math:negation ?S1.
+    (?K1 ?N ?P1 ?P ?S1) :pi true.
+}.

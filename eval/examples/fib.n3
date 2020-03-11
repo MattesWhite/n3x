@@ -1,0 +1,35 @@
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix : <http://josd.github.io/eye/reasoning#>.
+
+# 1
+{(?X) :fib ?Y} <= {(?X 1 1) :fib ?Y}.
+# 2
+{(0 ?A ?B) :fib ?B} <= {}.
+# 3
+{(1 ?A ?B) :fib ?B} <= {}.
+
+# 4
+# N3
+{
+    (?X ?A ?B) :fib ?Y
+} <= {
+    ?X math:greaterThan 1. 
+    (
+        (?X 1)!math:difference 
+        ?B 
+        (?A ?B)!math:sum
+    ) :fib ?Y
+}.
+
+# N3X
+{
+    (?X ?A ?B) :fib ?Y
+} <= {
+    ?X math:greaterThan 1. 
+    (
+        $?X - 1$
+        ?B
+        $?A + ?B$
+    ) :fib ?Y
+}.
+

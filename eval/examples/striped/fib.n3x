@@ -1,0 +1,11 @@
+{
+    (?X ?A ?B) :fib ?Y
+} <= {
+    ?X math:greaterThan 1. 
+    (
+        $?X - 1$
+        ?B
+        $?A + ?B$
+    ) :fib ?Y
+}.
+

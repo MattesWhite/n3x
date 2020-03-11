@@ -1,0 +1,28 @@
+{
+  ?id :input ?x .
+  (?x "0.6") math:product ?y .
+} => {
+  ?id :iteration [
+    :result ?y ;
+    :number "1" ;
+  ].
+} .
+
+{
+  ?id :input ?a .
+  ?id :iteration [
+    :result ?guess ;
+    :number ?i 
+  ] .
+  :config :iterations ?max .
+  ?i math:lessThan ?max .
+  (?a ?guess) math:quotient ?inter .
+  (?inter ?guess) math:sum ?inter2 .
+  (?inter2 "2") math:quotient ?res .
+  (?i "1") math:sum ?next_i .
+} => {
+  ?id :iteration [
+    :result ?res ;
+    :number ?next_i 
+  ] .
+} .

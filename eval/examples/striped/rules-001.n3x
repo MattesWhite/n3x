@@ -1,0 +1,25 @@
+{
+    :input1 :measurement10 ?M1.
+    :input2 :measurement2 true.
+    :disturbance1 :measurement3 ?D1.
+} => {
+    :actuator1 :control1 $?M1 * 19.6 - math:log(10, ?D1)$.
+}.
+
+{ 
+    :input3 :measurement3 ?M3.
+    :state3 :observation3 ?P3.
+    :output2 :measurement4 ?M4.
+    :output2 :target2 ?T2.
+    $?T2 - ?M4$ = ?E.      # error
+} => {
+    :actuator2 :control1 $ ?E * 5.8 + (?P3 - ?M4) * 7.3 / ?E $.
+}.
+
+{
+    ?I :measurement10 ?M.
+} <= {
+    ?I :measurement1 (?M1 ?M2).
+    ?M1 math:lessThan ?M2.
+    $math:exponentiation(?M2 - ?M1, 0.5)$ = ?M.
+}.

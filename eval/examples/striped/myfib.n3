@@ -1,0 +1,19 @@
+{
+  :fib :number [
+    :index ?n2 ;
+    :value ?fib2
+  ], [
+    :index ?n1 ;
+    :value ?fib1
+  ] .
+  (?n1 "1") math:sum ?n .
+  (?n2 "2") math:sum ?n .
+  ?id :target_number ?target .
+  ?n math:notGreaterThan ?target .
+  (?fib2 ?fib1) math:sum ?fib_n .
+} => {
+  :fib :number [
+    :index ?n ;
+    :value ?fib_n
+  ] .
+} .

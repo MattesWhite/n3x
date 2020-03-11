@@ -1,0 +1,23 @@
+{
+  ?id :input ?x .
+} => {
+  ?id :iteration [
+    :result $?x * 0.6$ ;
+    :number "1"
+  ].
+} .
+
+{
+  ?id :input ?a .
+  ?id :iteration [
+    :result ?guess ;
+    :number ?i 
+  ] .
+  :config :iterations ?max .
+  ?i math:lessThan ?max .
+} => {
+  ?id :iteration [
+    :result $((?a / ?guess) + ?guess) / 2$ ;
+    :number $?i + 1$
+  ] .
+} .

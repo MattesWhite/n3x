@@ -1,0 +1,22 @@
+# Calculate pi using Nilakantha series
+# See http://www.wikihow.com/Calculate-Pi
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix : <http://josd.github.io/eye/reasoning#>.
+
+# ============================================= 1
+# N3
+{
+    (?N ?Pi) :pi true
+} <= {
+    (1 ?N 0 ?P 1) :pi true.
+    (3 (4 ?P)!math:product) math:sum ?Pi.
+}.
+
+# N3X
+{
+    (1 ?N 0 ?P 1) :pi true.
+    $?P * 4 + 3$ = ?Pi.
+} => {
+    (?N ?Pi) :pi true
+}.

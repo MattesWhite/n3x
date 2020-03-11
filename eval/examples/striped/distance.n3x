@@ -1,0 +1,8 @@
+{
+  ?p1 :x ?x1 ; :y ?y1 .
+  ?p2 :x ?x2 ; :y ?y2 .
+  $?x1 - ?x2$ = ?dx .
+  $?y1 - ?y2$ = ?dy .
+} => {
+  :result :value $math:sqrt(?dx * ?dx + ?dy * ?dy)$ .
+} .

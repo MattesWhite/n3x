@@ -1,0 +1,18 @@
+{
+  # get fib(n-2) and fib(n-1)
+  :fib :number [
+    :index ?n2 ;
+    :value ?fib2
+  ], [
+    :index ?n1 ;
+    :value ?fib1
+  ] .
+  $?n1 - ?n2$ math:equalTo 1 .
+  ?id :target_number ?target .
+  $?n1 + 1$ math:notGreaterThan ?target .
+} => {
+  :fib :number [
+    :index $?n1 + 1$ ;
+    :value $?fib1 + fib2$
+  ] .
+} .

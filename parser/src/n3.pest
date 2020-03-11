@@ -1,0 +1,62 @@
+/* N3's grammar */
+
+
+/* Productions */
+
+document = { statement ~ ("." ~ statement)* ~ "." }
+statement = { directive | simple_statement }
+directive = { prefixID | base }
+prefixID = { "@prefix" ~ PNAME_NS ~ IRIREF }
+base = { "@base" ~ IRIREF }
+simple_statement = { subject ~ property_list | bnode_property_list ~ property_list? }
+subject = { expression }
+property_list = { predicate ~ object  ~ ("," ~ object)* ~ (";" ~ property_list)* }
+predicate = { expression | "a" | "=>" | "=" }
+object = { expression }
+expression = { iri | formula | Variable | literal | BlankNode | bnode_property_list | collection }
+iri = { IRIREF | PrefixedName }
+PrefixedName = @{ PNAME_LN | PNAME_NS }
+formula = { "{" ~ ( statement ~ ("." ~ statement)* ~ "."? )? ~ "}" }
+Variable = @{ "?" ~ VARNAME }
+literal = { NumericLiteral | BooleanLiteral | RDFLiteral }
+bnode_property_list = { "[" ~ property_list ~ "]" }
+NumericLiteral = @{ DOUBLE | DECIMAL | INTEGER }
+RDFLiteral = @{ String ~ (LANGTAG | "^^" ~ iri)? }
+BooleanLiteral = @{ "true" | "false" }
+String = @{ STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE | STRING_LITERAL_LONG_SINGLE_QUOTE | STRING_LITERAL_LONG_QUOTE }
+collection = { "(" ~ expression* ~ ")" }
+BlankNode = @{ BLANK_NODE_LABEL | ANON }
+
+
+/* Terminals */
+
+IRIREF = @{ "<" ~ ( (!('\u{00}'..'\u{20}' | "<" | ">" | "\"" | "{" | "}" | "|" | "^" | "`" | "\\") ~ ANY ) | UCHAR )* ~ ">" }
+PNAME_NS = @{ PN_PREFIX? ~ ":" }
+PNAME_LN = @{ PNAME_NS ~ PN_LOCAL }
+BLANK_NODE_LABEL = @{ "_:" ~ (PN_CHARS_U | ASCII_DIGIT) ~ ( (PN_CHARS | "." ~ PN_CHARS)* )? }
+LANGTAG = @{ "@" ~ ASCII_ALPHA+ ~ ("-" ~ ASCII_ALPHANUMERIC+)* }
+INTEGER = @{ ("+" | "-")? ~ ASCII_DIGIT+ }
+DECIMAL = @{ ("+" | "-")? ~ ASCII_DIGIT* ~ "." ~ ASCII_DIGIT+ }
+DOUBLE = @{ ("+" | "-")? ~ ( ASCII_DIGIT+ ~ "." ~ ASCII_DIGIT* ~ EXPONENT | "." ~ ASCII_DIGIT+ ~ EXPONENT | ASCII_DIGIT+ ~ EXPONENT) }
+EXPONENT = @{ ^"e" ~ ("+" | "-")? ~ ASCII_DIGIT+ }
+STRING_LITERAL_QUOTE        = @{ "\"" ~ ( (!("\"" | "\n" | "\\" | "\r") ~ ANY) | ECHAR | UCHAR )* ~ "\"" }
+STRING_LITERAL_SINGLE_QUOTE = @{  "'" ~ ( (!( "'" | "\n" | "\\" | "\r") ~ ANY) | ECHAR | UCHAR )* ~  "'" }
+STRING_LITERAL_LONG_SINGLE_QUOTE = @{ "'''" ~ ( ("'" | "''")? ~ ( !( "'" | "\\" ) | ECHAR | UCHAR))* ~ "'''" }
+STRING_LITERAL_LONG_QUOTE = @{ "\"\"\"" ~ ( ("\"" | "\"\"")? ~ ( !("\"" | "\\") | ECHAR | UCHAR))* ~ "\"\"\"" }
+UCHAR = @{ "\\u" ~ (ASCII_HEX_DIGIT){4} | "\\U" ~ (ASCII_HEX_DIGIT){8} }
+ECHAR = @{ "\\" ~ ( "t" | "b" | "n" | "r" | "f" | "\"" | "'" | "\\" ) }
+WS = @{ "\u{20}" | "\u{09}" | "\u{0D}" | "\u{0A}" } /* built-in WHITESPACE and rule is used instead */
+ANON = { "[" ~ "]" }
+PN_CHARS_BASE = @{ ASCII_ALPHA | '\u{00C0}'..'\u{00D6}' | '\u{00D8}'..'\u{00F6}' | '\u{00F8}'..'\u{02FF}' | '\u{0370}'..'\u{037D}' | '\u{037F}'..'\u{1FFF}' | '\u{200C}'..'\u{200D}' | '\u{2070}'..'\u{218F}' | '\u{2C00}'..'\u{2FEF}' | '\u{3001}'..'\u{D7FF}' | '\u{F900}'..'\u{FDCF}' | '\u{FDF0}'..'\u{FFFD}' | '\u{10000}'..'\u{EFFFF}' }
+VARNAME = @{ ( PN_CHARS_U | ASCII_DIGIT ) ~ ( PN_CHARS_U | ASCII_DIGIT | "\u{00B7}" | '\u{0300}'..'\u{036F}' | '\u{203F}'..'\u{2040}' )* }
+PN_CHARS_U = { PN_CHARS_BASE | "_" }
+PN_CHARS = @{ PN_CHARS_U | "-" | ASCII_DIGIT | "\u{00B7}" | '\u{0300}'..'\u{036F}' | '\u{203F}'..'\u{2040}' }
+PN_PREFIX = @{ PN_CHARS_BASE ~ ((PN_CHARS | "."* ~ PN_CHARS)*)? }
+PN_LOCAL = @{ (PN_CHARS_U | ":" | ASCII_DIGIT | PLX) ~ ((PN_CHARS | "."* ~ (PN_CHARS | ":" | PLX) | ":" | PLX)*)? }
+PLX = @{ PERCENT | PN_LOCAL_ESC }
+PERCENT = @{ "%" ~ (ASCII_HEX_DIGIT){2} }
+HEX = @{ ASCII_HEX_DIGIT } /* not used */
+PN_LOCAL_ESC = @{"\\" ~ ("_" | "~" | "." | "-" | "!" | "$" | "&" | "'" | "(" | ")" | "*" | "+" | "," | ";" | "=" | "/" | "?" | "#" | "@" | "%") }
+
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+COMMENT = _{ "#" ~ (!"\n" ~ ANY)* ~ "\n" }

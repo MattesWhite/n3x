@@ -69,7 +69,7 @@
   ?id :input ?x .
 } => {
   ?id :iteration [
-    :result $?x * 0.6$ ;
+    :result ?x * 0.6 ;
     :number "1"
   ].
 } .
@@ -87,8 +87,8 @@
   ?i math:lessThan ?max .
 } => {
   ?id :iteration [
-    :result $((?a / ?guess) + ?guess) / 2$ ;
-    :number $?i + 1$
+    :result ((?a / ?guess) + ?guess) / 2 ;
+    :number ?i + 1
   ] .
 } .
 

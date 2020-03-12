@@ -7,12 +7,12 @@
     :index ?n1 ;
     :value ?fib1
   ] .
-  $?n1 - ?n2$ math:equalTo 1 .
+  ?n1 - ?n2 math:equalTo 1 .
   ?id :target_number ?target .
-  $?n1 + 1$ math:notGreaterThan ?target .
+  ?n1 + 1 math:notGreaterThan ?target .
 } => {
   :fib :number [
-    :index $?n1 + 1$ ;
-    :value $?fib1 + fib2$
+    :index ?n1 + 1 ;
+    :value ?fib1 + fib2
   ] .
 } .

@@ -27,9 +27,9 @@
 } <= {
     ?X math:greaterThan 1. 
     (
-        $?X - 1$
+        ?X - 1
         ?B
-        $?A + ?B$
+        ?A + ?B
     ) :fib ?Y
 }.
 

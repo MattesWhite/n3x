@@ -38,9 +38,9 @@
             ?T geo:lat ?LA.
             ?T geo:long ?LO.
             ?T log:notEqualTo ?C.
-            $?LA - ?LAC$ = ?DLA.
-            $?LO - ?LOC$ = ?DLO.
-            $math:exponentiation(?DLA * ?DLA + ?DLO * DLO, 0.5)$ math:lessThan 1.0.
+            ?LA - ?LAC = ?DLA.
+            ?LO - ?LOC = ?DLO.
+            math:exponentiation(?DLA * ?DLA + ?DLO * DLO, 0.5) math:lessThan 1.0.
         }
         ?L
     ).

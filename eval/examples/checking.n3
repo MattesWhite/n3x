@@ -50,5 +50,5 @@
         ?AL
     ).
 } => {
-    ?ACCT ck:balance $?B0 - math:sum(?AL)$.
+    ?ACCT ck:balance ?B0 - math:sum(?AL).
 }.

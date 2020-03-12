@@ -10,7 +10,7 @@ mod test {
 
     const FORMULA_N3X_1: &str = r#"{
         ?id :iteration [
-            :result $?x * 0.6$ ;
+            :result ?x * 0.6 ;
             :number 1
         ] .
     }"#;
@@ -29,8 +29,8 @@ mod test {
 
     const FORMULA_N3X_3: &str = r#"{
         ?id :iteration [
-            :result $((?a / ?guess) + ?guess) / 2$ ;
-            :number $?i + 1$
+            :result ((?a / ?guess) + ?guess) / 2 ;
+            :number ?i + 1
         ] .
     }"#;
 
@@ -111,9 +111,9 @@ mod test {
     #[test_case(FORMULA_N3X_3, Rule::formula => true ; "formula n3x 3")]
     #[test_case(FORMULA_N3X_4, Rule::formula => true ; "formula n3x 4")]
     #[test_case(FORMULA_N3X_5, Rule::formula => true ; "formula n3x 5")]
-    #[test_case("[ rdf:value $true && false$ ]", Rule::expression => true ; "expression bnode list and")]
+    #[test_case("[ rdf:value true && false ]", Rule::expression => true ; "expression bnode list and")]
     #[test_case("[ rdf:value _:nothing ]", Rule::expression => true ; "expression bnode list")]
-    #[test_case("[ rdf:value $math:sqrt(4 * math:fib(3 + 4 / 42e-45)) + STR(false && 42 = 3)$ ]", Rule::expression => true ; "expression bnode list expanded")]
+    #[test_case("[ rdf:value math:sqrt(4 * math:fib(3 + 4 / 42e-45)) + STR(false && 42 = 3) ]", Rule::expression => true ; "expression bnode list expanded")]
     #[test_case("_:nothing", Rule::n3x_expression => true ; "expression bnode")]
     #[test_case("true", Rule::n3x_expression => true ; "expression literal")]
     #[test_case("?x", Rule::n3x_expression => true ; "expression variable")]
@@ -133,7 +133,7 @@ mod test {
     #[test_case(N3DOC, Rule::document => true ;    "document n3")]
     #[test_case(FULL_DOC, Rule::document => true ; "document turtle")]
     #[test_case(PREFIX_ID, Rule::statement => true ; "statement")]
-    #[test_case("[ rdf:value $true && false$ ]", Rule::statement => true ; "statement expression outside formula")]
+    #[test_case("[ rdf:value true && false ]", Rule::statement => true ; "statement expression outside formula")]
     #[test_case("[ rdf:value true ]", Rule::statement => true ; "statement blank")]
     #[test_case(PREFIX_ID, Rule::directive => true ; "directive")]
     #[test_case(PREFIX_ID, Rule::prefixID => true ; "prefix_id")]

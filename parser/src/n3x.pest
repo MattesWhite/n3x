@@ -4,7 +4,7 @@
 /* Productions */
 
 document = { formula }
-formula = { ( statement ~ ("." ~ statement)* ~ "."? )? }
+formula = { statement ~ ("." ~ statement)* ~ "."? }
 statement = { directive | simple_statement }
 directive = { prefixID | base }
 prefixID = { "@prefix" ~ PNAME_NS ~ IRIREF }
@@ -15,7 +15,7 @@ property_list = { predicate ~ object ~ ("," ~ object)* ~ (";" ~ property_list)* 
 predicate = { expression | "a" | "=>" | "=" | "<=" }
 object = { expression }
 n3_term = { iri | "{" ~ formula ~ "}" | Variable | literal | BlankNode }
-expression = { "$" ~ n3x_expression ~ "$" | n3_term | bnode_property_list | collection }
+expression = { n3x_expression | bnode_property_list | collection }
 iri = { IRIREF | PrefixedName }
 PrefixedName = @{ PNAME_LN | PNAME_NS }
 Variable = @{ "?" ~ VARNAME }
@@ -36,7 +36,7 @@ or_expression = { and_expression ~ ("||" ~ and_expression)* }
 and_expression = { relational_expression ~ ("&&" ~ relational_expression)* }
 relational_expression = { additive_expression ~
     (
-        ("=" | "!=" | "<" | ">" | "<=" | ">=") ~ additive_expression
+        ("==" | "!=" | "<" | ">" | "<=" | ">=") ~ additive_expression
         | "IN" ~ collection
         | "NOT" ~ "IN" ~ collection
     )? }

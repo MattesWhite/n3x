@@ -1,0 +1,18 @@
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+@prefix : <http://example.org/> .
+
+:p1 :x "2" ; :y "3" .
+:p2 :x "1" ; :y "5" .
+
+{
+  ?p1 :x ?x1 ; :y ?y1 .
+  ?p2 :x ?x2 ; :y ?y2 .
+  (?x1 ?x2) math:difference ?dx .
+  (?y1 ?y2) math:difference ?dy .
+  (?dx "2") math:exponentiation ?dx2 .
+  (?dy "2") math:exponentiation ?dy2 .
+  (?dx2 ?dy2) math:sum ?sum .
+  ?sum math:sqrt ?sqrt .
+} => {
+  :result :value ?sqrt .
+} .

@@ -1,0 +1,48 @@
+# Check calculating predicates
+#
+# Expectation:
+# 1. Calculating predicates create new variable bindings.
+# 2. Calculating predicates can be used as filters as well.
+# 3. In addition, to calculation the knowledge base is searched for solutions.
+#
+# Result: 1. right; 2. ; 3. right;
+#
+
+@prefix : <http://example.org/> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+:input :value 1, 2, 3.
+
+(2 2) math:sum 5.
+
+# Calculate
+{
+    ?a :value ?x.
+    ?b :value ?y.
+    (?x ?y) math:sum ?s.
+} => {
+    (?x ?y) :sumsUpTo ?s.
+}.
+
+# Filter
+{
+    ?a :value ?x.
+    ?b :value ?y.
+    (?x ?y) math:sum 5.
+} => {
+    (?x ?y) :combinationFor 5.
+}.
+
+# Validate
+{
+    ?a :value ?x.
+    ?b :value ?y.
+    (?x ?y) math:sum ?s1.
+    (?x ?y) math:sum ?s2.
+    ?s1 math:notEqualTo ?s2.
+} => {
+    (?x ?y) :wrongSum (?s1 ?s2).
+}.
+# Insight
+# Can detect wrong results but not indentify.
+

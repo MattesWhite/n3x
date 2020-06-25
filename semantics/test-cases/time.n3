@@ -1,0 +1,21 @@
+# Check calculating predicates
+#
+# Expectation:
+# 1. Calculating predicates create new variable bindings.
+# 2. Calculating predicates can be used as filters as well.
+# 3. In addition, to calculation the knowledge base is searched for solutions.
+#
+# Result: 1. right; 2. ; 3. right;
+#
+
+@prefix : <http://example.org/> .
+@prefix time: <http://www.w3.org/2000/10/swap/time#>.
+
+:input :value "2020-01-02T03:04:05".
+
+{
+    ?a :value ?t.
+    ?t time:minute ?min .
+} => {
+    :res :minute ?min .
+}.

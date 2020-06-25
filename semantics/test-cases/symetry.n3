@@ -1,0 +1,42 @@
+# Symetry of predicates
+
+@prefix : <http://example.org/> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+{
+    3 math:equalTo 3 .
+} => {
+    :res :mathEqualWorks true
+} .
+
+{
+    ?x math:equalTo 4 .
+} => {
+    :res :valueMathReverse ?x
+} .
+
+{
+    5 math:equalTo ?x .
+} => {
+    :res :valueMath ?x
+} .
+
+{
+    3 = 3 .
+} => {
+    :res :owlSameWorks true
+} .
+
+{
+    ?x = 4 .
+} => {
+    :res :valueOwlReverse ?x
+} .
+
+{
+    5 = ?x .
+} => {
+    :res :valueOwl ?x
+} .
+
+

@@ -1,0 +1,33 @@
+# Check filter predicates
+#
+# Expectation:
+# 1. Filters does not generate new bindings, e.g. result does not contain
+#    '5 :isLessThan 10.'
+# 2. Additional to calculating filters the knowledge base is searched, i.e.
+#    The result must contain '5 :isLessThan 2.'
+#
+# Result: The expectations where met.
+#
+
+@prefix : <http://example.org/> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+
+:input :value 1, 2, 4, 5.
+
+5 math:lessThan 2.
+
+{
+    ?a :value ?x.
+    ?b :value ?y.
+    ?x math:lessThan ?y.
+} => {
+    ?x :isLessThan ?y.
+}.
+
+{
+    ?a :value ?x.
+    ?b :value ?y.
+    ?x math:greaterThan ?y.
+} => {
+    ?x :isGreaterThan ?y.
+}.

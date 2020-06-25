@@ -1,0 +1,59 @@
+# N3X-0.2.0
+
+@prefix : <#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+@prefix string: <http://www.w3.org/2000/10/swap/string#> .
+
+:config :iterations "10" .
+
+#:i1 :input "1" .
+#:i2 :input "2" .
+#:i3 :input "3" .
+#:i9 :input "9" .
+:ix :input "28561" . # 169^2
+
+# calculate seed
+{
+  ?id :input ?x .
+  ?seed := ?x * 0.6 .
+} => {
+  ?id :iteration [
+    :result ?seed ;
+    :number "1"
+  ].
+} .
+
+# calculate guess
+{
+  # Get values
+  ?id :input ?a .
+  ?id :iteration [
+    :result ?guess ;
+    :number ?i 
+  ] .
+  # check for recursion end
+  :config :iterations ?max .
+  filter += ?i < ?max .
+  ?iter  := ((?a / ?guess) + ?guess) / 2 .
+  ?num   := ?i + 1 .
+} => {
+  ?id :iteration [
+    :result ?iter ;
+    :number ?num
+  ] .
+} .
+
+# finish
+{
+  # get iteration's result
+  ?id :iteration [
+    :result ?res ;
+    :number ?i
+  ] .
+  # check for recursion's end
+  :config :iterations ?max .
+  filter += ?i = ?max .
+} => {
+  ?id :sqrt ?res .
+} .

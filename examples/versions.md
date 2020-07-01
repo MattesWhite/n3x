@@ -11,4 +11,4 @@ Each example starts with a comment about the version of N3/N3X used.
 | `N3X-0.1.1` | With `$` as delimiter for expressions |
 | `N3X-0.2.0` | Limit magic predicates to `:=` and `+=` [1] |
 
-[1] `:=` is a shorthand for `http://ti.rw.fau.de/n3x/0/2/0/ns#bind` and `+=` is a shorthand for `http://ti.rw.fau.de/n3x/0/2/0/ns#addCondition`.
+[1] `:=` is a shorthand for `http://ti.rw.fau.de/ns/n3x/0/2/0/#bind` and `+=` is a shorthand for `http://ti.rw.fau.de/ns/n3x/0/2/0/#addCondition`.

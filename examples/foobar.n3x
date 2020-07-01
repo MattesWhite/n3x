@@ -1,0 +1,14 @@
+# N3X-0.2.0
+
+@prefix math: <http://www.w3.org/2000/10/swap/math#> .
+@prefix : <http://example.org/> .
+
+[ :name "bar" ] .
+
+{
+  ?x :name ?label .
+  filter += NOT(CONTAINS(?label, "foo")) .
+  ?myName := CONCAT(?label, "bar") .
+} => {
+  :bar :name ?myName .
+} .

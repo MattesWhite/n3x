@@ -8,13 +8,16 @@ mod test {
     use pest::Parser as _;
     use test_case::test_case;
 
-    const FORMULA_N3X_1: &str = r#"{
-        ?id :iteration [
-            :result ?x * 0.6 ;
+    /// With a bind
+    const FORMULA_N3X_1: &str = 
+    r#"?id :iteration [
+            :result ?x ;
             :number 1
         ] .
-    }"#;
+        ?res := ?x * 0.6 .
+    "#;
     
+    /// With filter and comment
     const FORMULA_N3X_2: &str = r#"{
         # Get values
         ?id :input ?a .
@@ -24,29 +27,32 @@ mod test {
         ] .
         # check for recursion end
         :config :iterations ?max .
-        ?i math:lessThan ?max .
-    }"#;
+        filter += ?i < ?max .
+    } => true .
+    :s :p :o ."#;
 
-    const FORMULA_N3X_3: &str = r#"{
-        ?id :iteration [
-            :result ((?a / ?guess) + ?guess) / 2 ;
+    /// nested expression
+    const FORMULA_N3X_3: &str = 
+    r#"?id :iteration [
+            :result ?guess ;
             :number ?i + 1
         ] .
-    }"#;
+        ?res := ((?a / ?guess) + ?guess) / 2 .
+    "#;
 
+    /// bind and filter
     const FORMULA_N3X_4: &str = r#"{
         ?id :iteration [
-            :result ?res ;
+            :result ?guess ;
             :number ?i
         ] .
-        # check for recursion's end
-        :config :iterations ?max .
-        ?i math:equalTo ?max .
-    }"#;
+        ?res := math:sqrt(?guess) .
+        :config :resMax ?max .
+        filter += ?res < ?max .
+    } :some :NoSense"#;
 
-    const FORMULA_N3X_5: &str = r#"{
-        ?id :sqrt ?res .
-    }"#;
+    /// function in empty prefic
+    const FORMULA_N3X_5: &str = r#"?res := :sqare(?id) ."#;
 
     const N3DOC: &str = r#"@prefix math: <http://www.w3.org/2000/10/swap/math#> .
     @prefix ex: <http://example.org/> .
@@ -114,22 +120,22 @@ mod test {
     #[test_case("[ rdf:value true && false ]", Rule::expression => true ; "expression bnode list and")]
     #[test_case("[ rdf:value _:nothing ]", Rule::expression => true ; "expression bnode list")]
     #[test_case("[ rdf:value math:sqrt(4 * math:fib(3 + 4 / 42e-45)) + STR(false && 42 = 3) ]", Rule::expression => true ; "expression bnode list expanded")]
-    #[test_case("_:nothing", Rule::n3x_expression => true ; "expression bnode")]
-    #[test_case("true", Rule::n3x_expression => true ; "expression literal")]
-    #[test_case("?x", Rule::n3x_expression => true ; "expression variable")]
-    #[test_case(FORMULA, Rule::n3x_expression => true ; "expression formula")]
-    #[test_case("ex:dummy", Rule::n3x_expression => true ; "expression prefix")]
-    #[test_case("<http://example.org/>", Rule::n3x_expression => true ; "expression iri")]
-    #[test_case("STR(42)", Rule::n3x_expression => true ; "expression built in")]
-    #[test_case("math:sqrt(42)", Rule::n3x_expression => true ; "expression funcall")]
-    #[test_case("-(5 - 11) * (21 / 3)", Rule::n3x_expression => true ; "expression paranthesis")]
-    #[test_case("!true", Rule::n3x_expression => true ; "expression negate")]
-    #[test_case("6 * 7", Rule::n3x_expression => true ; "expression mul")]
-    #[test_case("41 + 1", Rule::n3x_expression => true ; "expression add")]
-    #[test_case("2 IN (4 true \"hans\"^^xsd:string)", Rule::n3x_expression => true ; "expression in list")]
-    #[test_case("2 > 5", Rule::n3x_expression => true ; "expression compare")]
-    #[test_case("true && false", Rule::n3x_expression => true ; "expression and")]
-    #[test_case("true || false", Rule::n3x_expression => true ; "expression or")]
+    #[test_case("_:nothing", Rule::sparql_expression => true ; "expression bnode")]
+    #[test_case("true", Rule::sparql_expression => true ; "expression literal")]
+    #[test_case("?x", Rule::sparql_expression => true ; "expression variable")]
+    #[test_case(FORMULA, Rule::sparql_expression => true ; "expression formula")]
+    #[test_case("ex:dummy", Rule::sparql_expression => true ; "expression prefix")]
+    #[test_case("<http://example.org/>", Rule::sparql_expression => true ; "expression iri")]
+    #[test_case("STR(42)", Rule::sparql_expression => true ; "expression built in")]
+    #[test_case("math:sqrt(42)", Rule::sparql_expression => true ; "expression funcall")]
+    #[test_case("-(5 - 11) * (21 / 3)", Rule::sparql_expression => true ; "expression paranthesis")]
+    #[test_case("!true", Rule::sparql_expression => true ; "expression negate")]
+    #[test_case("6 * 7", Rule::sparql_expression => true ; "expression mul")]
+    #[test_case("41 + 1", Rule::sparql_expression => true ; "expression add")]
+    #[test_case("2 IN (4 true \"hans\"^^xsd:string)", Rule::sparql_expression => true ; "expression in list")]
+    #[test_case("2 > 5", Rule::sparql_expression => true ; "expression compare")]
+    #[test_case("true && false", Rule::sparql_expression => true ; "expression and")]
+    #[test_case("true || false", Rule::sparql_expression => true ; "expression or")]
     #[test_case(N3DOC, Rule::document => true ;    "document n3")]
     #[test_case(FULL_DOC, Rule::document => true ; "document turtle")]
     #[test_case(PREFIX_ID, Rule::statement => true ; "statement")]

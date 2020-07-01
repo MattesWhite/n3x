@@ -1,4 +1,5 @@
-/* N3's grammar */
+/* N3X's grammar */
+/* version 0.2.0 */
 
 
 /* Productions */
@@ -10,12 +11,11 @@ directive = { prefixID | base }
 prefixID = { "@prefix" ~ PNAME_NS ~ IRIREF }
 base = { "@base" ~ IRIREF }
 simple_statement = { subject ~ property_list | bnode_property_list ~ property_list? }
-subject = { expression }
+subject = { "filter" | expression }
 property_list = { predicate ~ object ~ ("," ~ object)* ~ (";" ~ property_list)* }
-predicate = { expression | "a" | "=>" | "=" | "<=" }
-object = { expression }
-n3_term = { iri | "{" ~ formula ~ "}" | Variable | literal | BlankNode }
-expression = { n3x_expression | bnode_property_list | collection }
+predicate = { "a" | "=>" | "=" | "+=" | ":=" | expression }
+object = { sparql_expression }
+expression = { iri | "{" ~ formula ~ "}" | Variable | literal | BlankNode | bnode_property_list | collection }
 iri = { IRIREF | PrefixedName }
 PrefixedName = @{ PNAME_LN | PNAME_NS }
 Variable = @{ "?" ~ VARNAME }
@@ -26,26 +26,25 @@ RDFLiteral = @{ String ~ (LANGTAG | "^^" ~ iri)? }
 BooleanLiteral = @{ "true" | "false" }
 String = @{ STRING_LITERAL_QUOTE | STRING_LITERAL_SINGLE_QUOTE | STRING_LITERAL_LONG_SINGLE_QUOTE | STRING_LITERAL_LONG_QUOTE }
 collection = { "(" ~ expression* ~ ")" }
-BlankNode = { BLANK_NODE_LABEL | ANON }
-
+BlankNode = @{ BLANK_NODE_LABEL | ANON }
 
 /* N3X extensions */
 
-n3x_expression = { or_expression }
+sparql_expression = { or_expression }
 or_expression = { and_expression ~ ("||" ~ and_expression)* }
 and_expression = { relational_expression ~ ("&&" ~ relational_expression)* }
 relational_expression = { additive_expression ~
     (
-        ("==" | "!=" | "<" | ">" | "<=" | ">=") ~ additive_expression
+        ("=" | "!=" | "<" | ">" | "<=" | ">=") ~ additive_expression
         | "IN" ~ collection
         | "NOT" ~ "IN" ~ collection
     )? }
 additive_expression = { multiplicative_expression ~ ( ("+" | "-") ~ multiplicative_expression)* }
 multiplicative_expression = { unary_expression ~ ( ("*" | "/") ~ unary_expression )* }
 unary_expression    = { ("!" | "+" | "-")? ~ primary_expression }
-primary_expression = { "(" ~ n3x_expression ~ ")" | function_call | n3_term }
+primary_expression = { "(" ~ sparql_expression ~ ")" | function_call | expression }
 function_call       = { (built_in | iri) ~ arg_list }
-arg_list = { "(" ~ ( n3x_expression ~ ("," ~ n3x_expression)* )? ~ ")" }
+arg_list = { "(" ~ ( sparql_expression ~ ("," ~ sparql_expression)* )? ~ ")" }
 built_in            = { "STR" } /* to be completed */
 
 

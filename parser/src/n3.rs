@@ -63,7 +63,7 @@ mod test {
     const TRIPLES: &str = r#"<rangefinder/30>        rdf:type           sosa:Sensor ;
         rdfs:label "rangefinder #30"@en ;
         rdfs:comment "rangefinder #30 is a laser range finder sensor."@en ."#;
-        
+
     #[test_case(N3DOC, Rule::document => true ;    "document n3")]
     #[test_case(FULL_DOC, Rule::document => true ; "document turtle")]
     #[test_case(PREFIX_ID, Rule::statement => true ; "statement")]

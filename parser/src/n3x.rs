@@ -1,22 +1,39 @@
+pub mod abstract_syntax;
+pub mod simple;
+
 #[derive(Parser)]
 #[grammar = "n3x.pest"]
 pub struct Parser;
 
+use self::abstract_syntax::AbstractSyntaxNode;
+use crate::traverse::ast_from_pair;
+use anyhow::Result;
+use pest::Parser as _;
+
+pub fn prarse_and_print(input: &str) -> Result<()> {
+    let ps = Parser::parse(Rule::document, &input)?;
+
+    for p in ps {
+        let ast: AbstractSyntaxNode = ast_from_pair(p);
+        println!("Parsed:\n{}", ast);
+    }
+
+    Ok(())
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
-    use pest::Parser as _;
     use test_case::test_case;
 
     /// With a bind
-    const FORMULA_N3X_1: &str = 
-    r#"?id :iteration [
+    const FORMULA_N3X_1: &str = r#"?id :iteration [
             :result ?x ;
             :number 1
         ] .
         ?res := ?x * 0.6 .
     "#;
-    
+
     /// With filter and comment
     const FORMULA_N3X_2: &str = r#"{
         # Get values
@@ -32,8 +49,7 @@ mod test {
     :s :p :o ."#;
 
     /// nested expression
-    const FORMULA_N3X_3: &str = 
-    r#"?id :iteration [
+    const FORMULA_N3X_3: &str = r#"?id :iteration [
             :result ?guess ;
             :number ?i + 1
         ] .
@@ -111,7 +127,6 @@ mod test {
         rdfs:comment "rangefinder #30 is a laser range finder sensor."@en ."#;
     const FORMULA: &str = r#"{ ex:dummy rdf:value 42 . }"#;
 
-    
     #[test_case(FORMULA_N3X_1, Rule::formula => true ; "formula n3x 1")]
     #[test_case(FORMULA_N3X_2, Rule::formula => true ; "formula n3x 2")]
     #[test_case(FORMULA_N3X_3, Rule::formula => true ; "formula n3x 3")]

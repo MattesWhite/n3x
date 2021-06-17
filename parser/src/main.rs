@@ -1,6 +1,7 @@
+use anyhow::Result;
 use clap::{arg_enum, value_t, App, Arg};
+use parser::{n3, n3x, turtle};
 use pest::Parser;
-use parser::{turtle, n3, n3x};
 use std::io::Read;
 
 arg_enum! {
@@ -18,8 +19,7 @@ impl Default for Parsers {
     }
 }
 
-fn main() {
-
+fn main() -> Result<()> {
     let app = App::new("Grammar Validator")
         .version("0.1")
         .author("Matthias Farnbauer-Schmidt <matthias.farnbauer-schmidt@fau.de>")
@@ -53,25 +53,17 @@ fn main() {
     // parse
     match value_t!(app.value_of("format"), Parsers).unwrap() {
         Parsers::Turtle => {
-            turtle::Parser::parse(turtle::Rule::turtleDoc, &input)
-                .map(|pairs| {
-                    println!("XXX Parsed:\n{:#?}\nXXX", pairs);
-                })
-                .unwrap();
-        },
+            turtle::Parser::parse(turtle::Rule::turtleDoc, &input).map(|pairs| {
+                println!("XXX Parsed:\n{:#?}\nXXX", pairs);
+            })?;
+        }
         Parsers::N3 => {
-            n3::Parser::parse(n3::Rule::document, &input)
-                .map(|pairs| {
-                    println!("XXX Parsed:\n{:#?}\nXXX", pairs);
-                })
-                .unwrap();
-        },
-        Parsers::N3X => {
-            n3x::Parser::parse(n3x::Rule::document, &input)
-                .map(|pairs| {
-                    println!("XXX Parsed:\n{:#?}\nXXX", pairs);
-                })
-                .unwrap();
-        },
-    }
+            n3::Parser::parse(n3::Rule::document, &input).map(|pairs| {
+                println!("XXX Parsed:\n{:#?}\nXXX", pairs);
+            })?;
+        }
+        Parsers::N3X => n3x::prarse_and_print(&input)?,
+    };
+
+    Ok(())
 }
